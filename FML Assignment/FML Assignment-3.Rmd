@@ -1,0 +1,129 @@
+---
+title: "Assignment-3"
+author: "Rajeswari Theegala"
+date: "2023-10-15"
+output:
+  pdf_document: default
+  html_document: default
+---
+  
+```{r setup}
+UniversalBank <- read.csv("C:/Users/dell/Downloads/UniversalBank.csv")
+summary(UniversalBank)
+library(caret)
+library(ISLR)
+library(e1071)
+library(dplyr)
+library(class)
+library(reshape2)
+library(ggplot2)
+library(gmodels)
+library(lattice)
+```
+
+```{r}
+#converting variables
+UniversalBank$Personal.Loan <- factor(UniversalBank$Personal.Loan)
+UniversalBank$Online <- factor(UniversalBank$Online)
+UniversalBank$CreditCard <- factor(UniversalBank$CreditCard)
+df= UniversalBank
+```
+
+```{r}
+#Question no 1
+
+
+set.seed(64060)
+Train_index <- createDataPartition(df$Personal.Loan, p = 0.6, list = FALSE)
+train.df = df[Train_index,]
+validation.df = df[-Train_index,]
+
+mytable <- xtabs(~ CreditCard + Online + Personal.Loan , data = train.df)
+ftable(mytable)
+
+```
+
+```{r}
+#Question  no 2
+
+
+
+probability = 59/(59+479)
+probability
+
+```
+
+```{r}
+#Question no 3
+
+
+table(Personal.Loan = train.df$Personal.Loan, Online = train.df$Online)
+
+table(Personal.Loan = train.df$Personal.Loan, CreditCard = train.df$CreditCard)
+table(Personal.Loan = train.df$Personal.Loan)
+```
+
+```{r}
+#Question no 4
+
+ 
+
+#i. P(CC = 1 | Loan = 1) (the proportion of credit card holders among the loan 
+#acceptors) 
+Probablity1 <- 93/(93+195)
+Probablity1
+
+#ii. P(Online = 1 | Loan = 1)  
+Probablity2 <- 179/(179+109)
+Probablity2
+
+#iii. P(Loan = 1) (the proportion of loan acceptors)  
+Probablity3 <- 288/(288+2712)
+Probablity3
+#iv. P(CC = 1 | Loan = 0)  
+Probablity4 <- 788/(788+1924)
+Probablity4
+
+#v. P(Online = 1 | Loan = 0) 
+Probablity5 <- 1631/(1631+1081)
+Probablity5
+
+#vi. P(Loan = 0) 
+Probablity6 <- 2712/(2712+288)
+Probablity6
+```
+
+```{r}
+#Question no 5
+
+
+
+Task5Probablity <- (Probablity1*Probablity2*Probablity3)/
+  ((Probablity1*Probablity2*Probablity3) +(Probablity4*Probablity5*Probablity6))
+
+Task5Probablity 
+```
+
+```{r}
+#Question no 6
+
+
+
+#Answer:
+  
+# The answer to question 2 was 0.1096654, and the answer to question 5 was 0.1087106, which is nearly identical.The sole difference between the exact approach and the naïve bayes method is that the exact method requires the same independent variable categorization as the naive bayes method to predict. We can check that the answer to question 2 is more accurate because we used the exact data from the pivot table.
+
+#Question no 7
+
+
+
+nb.model <- naiveBayes(Personal.Loan~ Online + CreditCard, data = train.df)
+To_Predict=data.frame(Online=1, CreditCard= 1)
+predict(nb.model, To_Predict,type = 'raw')
+
+# The answer to question 7 is 0.08463445, and the answer to job 5 is 0.1087106.
+# The outcome is nearly identical to that of Task5.
+# Because of the rounding, there is just a minor change.
+# The discrepancy has no effect on the output's rank order.
+
+```
